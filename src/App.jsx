@@ -52,6 +52,14 @@ const INITIAL_TOURNAMENTS = [
 export default function App() {
   const [tournaments, setTournaments] = useState(INITIAL_TOURNAMENTS)
   const [showModal, setShowModal] = useState(false)
+  const [registrations, setRegistrations] = useState({})
+
+  function handleRegister(tournamentId, teamData) {
+    setRegistrations(prev => ({
+      ...prev,
+      [tournamentId]: [...(prev[tournamentId] ?? []), teamData],
+    }))
+  }
 
   function handleCreate(formData) {
     const newTournament = {
@@ -80,7 +88,13 @@ export default function App() {
             )}
           </>
         } />
-        <Route path="/torneo/:id" element={<TournamentDetail tournaments={tournaments} />} />
+        <Route path="/torneo/:id" element={
+          <TournamentDetail
+            tournaments={tournaments}
+            registrations={registrations}
+            onRegister={handleRegister}
+          />
+        } />
       </Routes>
       <footer className="bg-gray-900 border-t border-gray-800 text-center text-gray-600 text-sm py-6">
         © 2026 LoLTorneos.cl · Para la comunidad amateur de Chile
