@@ -1,4 +1,4 @@
-export default function Hero() {
+export default function Hero({ onCreateClick }) {
   return (
     <section className="bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-center py-24 px-6">
       <p className="text-yellow-400 uppercase tracking-widest text-sm font-semibold mb-4">
@@ -12,7 +12,10 @@ export default function Hero() {
         Organiza y participa en torneos de League of Legends para jugadores amateur de todo Chile.
         Totalmente gratis.
       </p>
-      <button className="bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-bold py-4 px-10 rounded-lg text-lg transition-colors shadow-lg shadow-yellow-400/20">
+      <button
+        onClick={onCreateClick}
+        className="bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-bold py-4 px-10 rounded-lg text-lg transition-colors shadow-lg shadow-yellow-400/20"
+      >
         Crear torneo
       </button>
     </section>
