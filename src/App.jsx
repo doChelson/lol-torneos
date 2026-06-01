@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
 import Hero from './components/Hero'
 import TournamentsSection from './components/TournamentsSection'
 import TournamentModal from './components/TournamentModal'
+import TournamentDetail from './pages/TournamentDetail'
 
 const MONTHS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
 
@@ -68,16 +70,21 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gray-900">
       <Header />
-      <main>
-        <Hero onCreateClick={() => setShowModal(true)} />
-        <TournamentsSection tournaments={tournaments} />
-      </main>
+      <Routes>
+        <Route path="/" element={
+          <>
+            <Hero onCreateClick={() => setShowModal(true)} />
+            <TournamentsSection tournaments={tournaments} />
+            {showModal && (
+              <TournamentModal onClose={() => setShowModal(false)} onCreate={handleCreate} />
+            )}
+          </>
+        } />
+        <Route path="/torneo/:id" element={<TournamentDetail tournaments={tournaments} />} />
+      </Routes>
       <footer className="bg-gray-900 border-t border-gray-800 text-center text-gray-600 text-sm py-6">
         © 2026 LoLTorneos.cl · Para la comunidad amateur de Chile
       </footer>
-      {showModal && (
-        <TournamentModal onClose={() => setShowModal(false)} onCreate={handleCreate} />
-      )}
     </div>
   )
 }
