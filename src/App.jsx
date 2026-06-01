@@ -8,6 +8,23 @@ import TournamentDetail from './pages/TournamentDetail'
 
 const MONTHS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
 
+function buildBracket(teams) {
+  const n = teams.length
+  const size = Math.pow(2, Math.ceil(Math.log2(Math.max(n, 2))))
+  const names = [...teams.map(t => t.teamName), ...Array(size - n).fill(null)]
+  const rounds = []
+  const first = []
+  for (let i = 0; i < names.length; i += 2)
+    first.push({ team1: names[i], team2: names[i + 1] })
+  rounds.push(first)
+  let count = first.length
+  while (count > 1) {
+    count = Math.ceil(count / 2)
+    rounds.push(Array.from({ length: count }, () => ({ team1: null, team2: null })))
+  }
+  return rounds
+}
+
 function formatDate(dateStr) {
   const [year, month, day] = dateStr.split('-')
   return `${parseInt(day)} ${MONTHS[parseInt(month) - 1]} ${year}`
@@ -53,6 +70,12 @@ export default function App() {
   const [tournaments, setTournaments] = useState(INITIAL_TOURNAMENTS)
   const [showModal, setShowModal] = useState(false)
   const [registrations, setRegistrations] = useState({})
+  const [brackets, setBrackets] = useState({})
+
+  function handleGenerateBracket(tournamentId) {
+    const teams = registrations[tournamentId] ?? []
+    setBrackets(prev => ({ ...prev, [tournamentId]: buildBracket(teams) }))
+  }
 
   function handleRegister(tournamentId, teamData) {
     setRegistrations(prev => ({
@@ -93,6 +116,8 @@ export default function App() {
             tournaments={tournaments}
             registrations={registrations}
             onRegister={handleRegister}
+            brackets={brackets}
+            onGenerateBracket={handleGenerateBracket}
           />
         } />
       </Routes>

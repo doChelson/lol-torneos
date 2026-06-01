@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import Bracket from '../components/Bracket'
 
 const STATUS_STYLES = {
   inscripciones: 'bg-green-900 text-green-400',
@@ -21,7 +22,7 @@ function emptyForm(format) {
   return { teamName: '', players: Array(playerCount(format)).fill('') }
 }
 
-export default function TournamentDetail({ tournaments, registrations, onRegister }) {
+export default function TournamentDetail({ tournaments, registrations, onRegister, brackets, onGenerateBracket }) {
   const { id } = useParams()
   const navigate = useNavigate()
 
@@ -43,6 +44,7 @@ export default function TournamentDetail({ tournaments, registrations, onRegiste
 
   const { name, universidad, format, date, teams: cupos, prize, region, status } = tournament
   const registered = registrations[tournament.id] ?? []
+  const bracket = brackets[tournament.id] ?? null
   const isFull = registered.length >= cupos
   const pCount = playerCount(format)
 
@@ -124,6 +126,30 @@ export default function TournamentDetail({ tournaments, registrations, onRegiste
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Sección bracket */}
+        {registered.length >= 2 && (
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <h2 className="text-white text-xl font-bold">Bracket</h2>
+              <button
+                onClick={() => onGenerateBracket(tournament.id)}
+                className="bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-bold px-5 py-2 rounded-lg text-sm transition-colors"
+              >
+                {bracket ? 'Regenerar bracket' : 'Generar bracket'}
+              </button>
+            </div>
+            {bracket ? (
+              <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6">
+                <Bracket rounds={bracket} />
+              </div>
+            ) : (
+              <p className="text-gray-500 text-sm">
+                Hay {registered.length} {registered.length === 1 ? 'equipo inscrito' : 'equipos inscritos'}. Presiona "Generar bracket" para armar el cuadro.
+              </p>
+            )}
           </div>
         )}
       </div>
